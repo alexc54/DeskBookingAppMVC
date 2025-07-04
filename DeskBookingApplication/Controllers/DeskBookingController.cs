@@ -111,8 +111,19 @@ namespace DeskBookingApplication.Controllers
             return View(myBookings);
         }
 
-        
-
-
+        //POST /DeskBooking/Cancel/id  -- Cancel/Delete booking
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Cancel(int id)
+        {
+            var booking = await _context.DeskBookings.FindAsync(id);
+            if (booking == null)
+    {
+        return NotFound();
+    }
+            _context.DeskBookings.Remove(booking);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(MyBookings));
+        }
     }
 }

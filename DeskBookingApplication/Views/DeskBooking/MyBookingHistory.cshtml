@@ -1,0 +1,38 @@
+﻿@model IEnumerable<DeskBookingApplication.Models.DeskBooking>
+
+@{
+    ViewData["Title"] = "Booking History";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (!Model.Any())
+{
+    <p>You have no previous bookings.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Desk</th>
+                <th>Employee</th>                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in Model)
+            {
+                <tr>
+                    <td>@booking.BookingDate.ToString("dd-MM-yyyy")</td>
+                    <td>@booking.Desk.Name</td>
+                    <td>@booking.User.FirstName @booking.User.LastName</td>                   
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="MyBookings" class="btn btn-secondary">View Upcoming Bookings</a>
+}
+
+<a asp-action="MyBookings" class="btn btn-secondary">View Upcoming Bookings</a>

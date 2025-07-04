@@ -18,7 +18,7 @@ else
                 <th>Date</th>
                 <th>Desk</th>
                 <th>Employee</th>
-               
+                <th>Cancel</th>
             </tr>
         </thead>
         <tbody>
@@ -28,7 +28,13 @@ else
                     <td>@booking.BookingDate.ToString("dd-MM-yyyy")</td>
                     <td>@booking.Desk.Name</td>
                     <td>@booking.User.FirstName @booking.User.LastName</td>
-                   
+                    <td>
+                         <form asp-action="Cancel" method="post" asp-route-id="@booking.Id" onsubmit="return confirm('Are you sure you want to cancel the booking?');">
+                    <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                    @Html.AntiForgeryToken()
+                        </form>
+
+                    </td>
                 </tr>
             }
         </tbody>

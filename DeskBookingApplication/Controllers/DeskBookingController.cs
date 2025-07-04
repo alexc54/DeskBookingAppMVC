@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DeskBookingApplication.Controllers
 {
@@ -101,10 +102,10 @@ namespace DeskBookingApplication.Controllers
             //Gets current user
             var user = await _userManager.GetUserAsync(User);
 
-            //Finds all bookings done by this user
+            //Finds upcoming bookings done by this user (today included)
             var myBookings = await _context.DeskBookings
                 .Include(b => b.Desk)
-                .Where(b => b.UserId == user.Id)
+                .Where(b => b.UserId == user.Id && b.BookingDate.Date>= DateTime.Today)
                 .OrderBy(b => b.BookingDate)
                 .ToListAsync();
 
@@ -125,5 +126,28 @@ namespace DeskBookingApplication.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(MyBookings));
         }
+
+        //GET /DeskBooking/MyBookingHistory  - Displays users previous bookings
+        public async Task<IActionResult> MyBookingHistory()
+        {
+            //Gets current user
+            var user = await _userManager.GetUserAsync(User);
+
+            //Finds all bookings done by this user previous to todays date
+            var myBookings = await _context.DeskBookings
+            .Include(b => b.Desk)
+                .Where(b => b.UserId == user.Id && b.BookingDate.Date < DateTime.Today)
+                .OrderBy(b => b.BookingDate)
+                .ToListAsync();
+
+            return View(myBookings);
+        }
+
     }
+
+    
+
+
+
+
 }

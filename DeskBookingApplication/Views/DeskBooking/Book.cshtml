@@ -1,0 +1,58 @@
+﻿@model IEnumerable<DeskBookingApplication.Models.Desk>
+
+@{
+    ViewData["Title"] = "Book a Desk";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+
+<form method="get" asp-action="Book">
+    <div class="form-group">
+        <label for="date">Select Date:</label>
+        <input type="date" name="date" id="date" class="form-control" value="@ViewBag.Date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Check Availability</button>
+</form>
+
+@if (!Model.Any())
+{
+    <p class="mt-4 text-danger">No desks available on @ViewBag.Date.</p>
+}
+else
+{
+    <form method="post" asp-action="Book">
+        <input type="hidden" name="date" value="@ViewBag.Date" />
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Desk Name</th>
+                    <th>Select</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var desk in Model)
+                {
+                    <tr>
+                        <td>@desk.Name</td>
+                        <td>
+                            <button type="submit" name="deskId" value="@desk.Id" class="btn btn-success">
+                                Book
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+}

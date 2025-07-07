@@ -23,6 +23,7 @@
         <input type="date" name="date" id="date" class="form-control" value="@ViewBag.Date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
     </div>
     <button type="submit" class="btn btn-primary mt-2">Check Availability</button>
+    
 </form>
 
 @if (!Model.Any())
@@ -33,7 +34,7 @@ else
 {
     <form method="post" asp-action="Book">
         <input type="hidden" name="date" value="@ViewBag.Date" />
-        <table class="table mt-4">
+             <table class="table table-hover table-bordered">
             <thead>
                 <tr>
                     <th>Desk Name</th>

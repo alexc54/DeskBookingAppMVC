@@ -54,7 +54,7 @@ namespace DeskBookingApplication.Controllers
             //Check if booking date input is in the past
             if (date.Date < DateTime.Today)
             {
-                ModelState.AddModelError("", "You cannot book a desk for a date that has already occured.");
+                ModelState.AddModelError("", "You cannot book a desk for past date!");
             }
 
             //Check if user has already booked a desk on inputted date
@@ -64,7 +64,7 @@ namespace DeskBookingApplication.Controllers
             if (alreadyBooked)
             {
                 //Error will display on the screen telling the user they have already booked desk on this date
-                ModelState.AddModelError("", "You have already booked a desk on this date.");
+                ModelState.AddModelError("", "You have already booked a desk on this date!");
 
                 //Display available desks again
                 var bookedDeskIds = await _context.DeskBookings

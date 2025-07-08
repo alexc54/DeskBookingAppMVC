@@ -7,7 +7,9 @@ var connectionString = builder.Configuration.GetConnectionString("DeskBookingAut
 
 builder.Services.AddDbContext<DeskBookingAuthDbContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<DeskBookingApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<DeskBookingAuthDbContext>();
+builder.Services.AddDefaultIdentity<DeskBookingApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<DeskBookingAuthDbContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -35,5 +37,44 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+
+//Seeding roles into app - called everytime app is restarted 
+using(var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    var roles = new[] { "Manager", "Employee" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+            await roleManager.CreateAsync(new IdentityRole(role));
+    }
+
+}
+
+//Seeding a manager account with a manager role into app - called everytime app is restarted 
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<DeskBookingApplicationUser>>();
+
+    string email = "manager@manager.com";
+    string password = "Password1!";
+
+    if(await userManager.FindByEmailAsync(email) == null)
+    {
+        var user = new DeskBookingApplicationUser();
+        user.UserName = email;
+        user.Email = email;
+        user.FirstName = "System";
+        user.LastName = "Manager";
+
+        await userManager.CreateAsync(user, password);
+
+       await userManager.AddToRoleAsync(user, "Manager");
+
+    }
+
+}
 
 app.Run();

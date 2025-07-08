@@ -1,4 +1,10 @@
-﻿@{
+﻿@using DeskBookingApplication.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<DeskBookingApplicationUser> SignInManager
+@inject UserManager<DeskBookingApplicationUser> UserManager
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -6,3 +12,21 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+
+@if (User.IsInRole("Manager"))
+
+{
+    <h1>MANAGER!!</h1>
+}
+else
+{
+    <h1>NOT A MANAGER</h1>
+}
+
+@if (User.IsInRole("Employee"))
+{
+    <h1>YOUR ONly AN EMPLOYEE</h1>
+    
+
+}

@@ -8,11 +8,24 @@
 
 @if (!Model.Any())
 {
-    <p>You have no bookings yet.</p>
+    <p>There are no bookings on these dates!</p>
+
+    <a asp-action="ManageBookings" class="btn btn-secondary">Back to all bookings</a>
+
 }
 else
 {
-    <table class="table table-hover table-bordered">
+
+    @* Search Options - Search bar for employee search, calendar to narrow dates down*@
+    <form asp-controller="Manager" asp-action="ManageBookings">
+        <input name="searchString" class="form-control" type="search" placeholder="Enter employee first or last name" aria-label="Search" />
+        <input type="date" name="dateFrom" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        <input type="date" name="dateTo" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        <button class="btn btn-dark" type="submit">Search</button> 
+    </form>
+
+
+    <table class="table table-hover table-bordered table-sm">
         <thead>
             <tr>
                 <th class="text-nowrap">Date</th>
@@ -39,4 +52,3 @@ else
         </tbody>
     </table>
 }
-<a asp-action="MyBookingHistory" class="btn btn-secondary">View Booking History</a>

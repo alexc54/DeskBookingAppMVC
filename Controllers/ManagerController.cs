@@ -21,19 +21,41 @@ namespace DeskBookingApplication.Controllers
             _userManager = userManager;
         }
 
-        //GET /manager/ManageBookings  - Displays bookings for all users
-        public async Task<IActionResult> ManageBookings()
+        //GET /manager/ManageBookings  - Displays bookings for all users - unless search bar used 
+        public async Task<IActionResult> ManageBookings(string searchString, DateTime? dateFrom, DateTime? dateTo)
         {
-            //Gets current user
-            var user = await _userManager.GetUserAsync(User);
-
-            //Finds upcoming bookings done by all users (today included)
-            var AllBookings = await _context.DeskBookings
+            var query = _context.DeskBookings
                 .Include(b => b.Desk)
                 .Include(b => b.User)
-                .Where(b => b.BookingDate.Date >= DateTime.Today)
+                .Where(b => b.BookingDate.Date >= DateTime.Today);
+
+            //If user enters into search bar, filter by first or last name of employee 
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(b =>
+                    b.User.FirstName.Contains(searchString) ||
+                    b.User.LastName.Contains(searchString));
+            }
+
+
+            // Filter by dateFrom if provided
+            if (dateFrom.HasValue)
+            {
+                query = query.Where(b => b.BookingDate.Date >= dateFrom.Value.Date);
+            }
+
+            // Filter by dateTo if provided
+            if (dateTo.HasValue)
+            {
+                query = query.Where(b => b.BookingDate.Date <= dateTo.Value.Date);
+            }
+
+
+
+            //Finds upcoming bookings done by all users (today included)
+            var AllBookings = await query                
                 .OrderBy(b => b.BookingDate)
-                .ToListAsync();
+                .ToListAsync();            
 
             return View(AllBookings);
         }

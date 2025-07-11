@@ -4,56 +4,74 @@
     ViewData["Title"] = "Book a Desk";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+<div class="mb-4">
+    <p>Select a date to see which desks are available, then choose the specific desk below.</p>
+</div>
 
 
+
+@* Calendar input to get date user wants to book desk for. *@
+<form method="get" asp-action="Book" class="mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-3">
+            <label for="date" class="form-label">Date</label>
+            <input type="date" name="date" id="date" class="form-control"
+                   value="@ViewBag.Date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Check Availability</button>
+        </div>
+    </div>
+</form>
+
+@* If no desks are avaliable, error message will tell user *@
 @if (!ViewData.ModelState.IsValid)
 {
-    <div class="alert alert-danger">
+    <div class="alert alert-danger mt-3">
         @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
         {
-            <p>@error.ErrorMessage</p>
+            <div>@error.ErrorMessage</div>
         }
     </div>
 }
 
-<form method="get" asp-action="Book">
-    <div class="form-group">
-        <label for="date">Select Date:</label>
-        <input type="date" name="date" id="date" class="form-control" value="@ViewBag.Date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
-    </div>
-    <button type="submit" class="btn btn-primary mt-2">Check Availability</button>
-    
-</form>
-
 @if (!Model.Any())
 {
-    <p class="mt-4 text-danger">No desks available on @ViewBag.Date.</p>
+    <div class="alert alert-warning mt-4">
+        No desks available for this date!
+    </div>
 }
 else
 {
-    <form method="post" asp-action="Book">
-        <input type="hidden" name="date" value="@ViewBag.Date" />
-        <table class="table table-hover table-bordered table-sm">
-            <thead>
-                <tr>
-                    <th>Desk Name</th>
-                    <th>Select</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var desk in Model)
-                {
-                    <tr>
-                        <td>@desk.Name</td>
-                        <td>
-                            <button type="submit" name="deskId" value="@desk.Id" class="btn btn-success">
-                                Book
-                            </button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </form>
+    @* Displays avaliable desks and option to book *@
+    <div class="card mt-4">  
+        <div class="card-body p-0">
+            <form method="post" asp-action="Book">
+                <input type="hidden" name="date" value="@ViewBag.Date" />
+                <table class="table table-hover mb-0 table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Desk Name</th>
+                            <th style="width: 150px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var desk in Model)
+                        {
+                            <tr>
+                                <td>@desk.Name</td>
+                                <td>
+                                    <button type="submit" name="deskId" value="@desk.Id" class="btn btn-success btn-sm">
+                                        Book
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
 }

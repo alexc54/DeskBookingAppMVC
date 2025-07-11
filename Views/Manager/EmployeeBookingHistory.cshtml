@@ -15,17 +15,36 @@
 }
 else
 {
-
     @* Search Options - Search bar for employee search, calendar to filter dates*@
-    <form asp-controller="Manager" asp-action="EmployeeBookingHistory">
-        <input name="searchString" class="form-control" type="search" placeholder="Enter employee first or last name" aria-label="Search" />
-        <label for="dateStart">Start Date</label> <input type="date" name="dateStart" class="form-control" max="@DateTime.Today.ToString("yyyy-MM-dd")" />
-        <label for="dateEnd">End Date</label>  <input type="date" name="dateEnd" class="form-control" max="@DateTime.Today.ToString("yyyy-MM-dd")" />
-        <button class="btn btn-dark" type="submit">Search</button> 
-    </form>
+        <form asp-controller="Manager" asp-action="EmployeeBookingHistory" class="mb-3">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <label for="searchString" class="form-label">Employee Name</label>
+                    <input name="searchString" id="searchString" class="form-control"
+                           type="search" placeholder="First or Last name" />
+                </div>
+
+                <div class="col-md-3">
+                    <label for="dateStart" class="form-label">Start Date</label>
+                    <input type="date" name="dateStart" id="dateStart" class="form-control"
+                           max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                </div>
+
+                <div class="col-md-3">
+                    <label for="dateEnd" class="form-label">End Date</label>
+                    <input type="date" name="dateEnd" id="dateEnd" class="form-control"
+                           max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                </div>
+
+                <div class="col-md-2">
+                    <button class="btn btn-dark w-100" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
 
 
-    <table class="table table-hover table-bordered table-sm">
+
+        <table class="table table-hover table-bordered table-sm table-striped">
         <thead>
             <tr>
                 <th class="text-nowrap">Date</th>

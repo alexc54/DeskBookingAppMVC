@@ -22,7 +22,7 @@ namespace DeskBookingApplication.Controllers
         }
 
         //GET /manager/ManageBookings  - Displays bookings for all users - unless search bar used 
-        public async Task<IActionResult> ManageBookings(string searchString, DateTime? dateFrom, DateTime? dateTo)
+        public async Task<IActionResult> ManageBookings(string searchString, DateTime? dateStart, DateTime? dateEnd)
         {
             var query = _context.DeskBookings
                 .Include(b => b.Desk)
@@ -39,15 +39,15 @@ namespace DeskBookingApplication.Controllers
 
 
             // Filter by dateFrom if provided
-            if (dateFrom.HasValue)
+            if (dateStart.HasValue)
             {
-                query = query.Where(b => b.BookingDate.Date >= dateFrom.Value.Date);
+                query = query.Where(b => b.BookingDate.Date >= dateStart.Value.Date);
             }
 
             // Filter by dateTo if provided
-            if (dateTo.HasValue)
+            if (dateEnd.HasValue)
             {
-                query = query.Where(b => b.BookingDate.Date <= dateTo.Value.Date);
+                query = query.Where(b => b.BookingDate.Date <= dateEnd.Value.Date);
             }
 
 
@@ -74,6 +74,47 @@ namespace DeskBookingApplication.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(ManageBookings));
         }
+
+        //GET /manager/ManageBookings  - Displays bookings for all users - unless search bar used 
+        public async Task<IActionResult> EmployeeBookingHistory(string searchString, DateTime? dateStart, DateTime? dateEnd)
+        {
+            var query = _context.DeskBookings
+                .Include(b => b.Desk)
+                .Include(b => b.User)
+                .Where(b => b.BookingDate.Date < DateTime.Today);
+
+            //If user enters into search bar, filter by first or last name of employee 
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(b =>
+                    b.User.FirstName.Contains(searchString) ||
+                    b.User.LastName.Contains(searchString));
+            }
+
+
+            // Filter by dateFrom if provided
+            if (dateStart.HasValue)
+            {
+                query = query.Where(b => b.BookingDate.Date >= dateStart.Value.Date);
+            }
+
+            // Filter by dateTo if provided
+            if (dateEnd.HasValue)
+            {
+                query = query.Where(b => b.BookingDate.Date <= dateEnd.Value.Date);
+            }
+
+
+
+            //Finds upcoming bookings done by all users (today included)
+            var AllBookings = await query
+                .OrderBy(b => b.BookingDate)
+                .ToListAsync();
+
+            return View(AllBookings);
+        }
+
+
 
     }
 }

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<DeskBookingApplication.Models.DeskBooking>
 
 @{
-    ViewData["Title"] = "Manage Bookings";
+    ViewData["Title"] = "Manage Upcoming Bookings";
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -10,28 +10,47 @@
 {
     <p>There are no bookings on these dates!</p>
 
-    <a asp-action="ManageBookings" class="btn btn-secondary">Back to all bookings</a>
+    <a asp-action="ManageBookings" class="btn btn-secondary">Reset Filters</a>
 
 }
 else
 {
 
-    @* Search Options - Search bar for employee search, calendar to narrow dates down*@
-    <form asp-controller="Manager" asp-action="ManageBookings">
-        <input name="searchString" class="form-control" type="search" placeholder="Enter employee first or last name" aria-label="Search" />
-        <input type="date" name="dateFrom" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
-        <input type="date" name="dateTo" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
-        <button class="btn btn-dark" type="submit">Search</button> 
+    @* Search Options - Search bar for employee search, calendar to filter dates*@
+    <form asp-controller="Manager" asp-action="ManageBookings" class="mb-3">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label for="searchString" class="form-label">Employee Name</label>
+                <input name="searchString" id="searchString" class="form-control"
+                       type="search" placeholder="First or Last name" />
+            </div>
+
+            <div class="col-md-3">
+                <label for="dateStart" class="form-label">Start Date</label>
+                <input type="date" name="dateStart" id="dateStart" class="form-control"
+                       min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <div class="col-md-3">
+                <label for="dateEnd" class="form-label">End Date</label>
+                <input type="date" name="dateEnd" id="dateEnd" class="form-control"
+                       min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <div class="col-md-2">
+                <button class="btn btn-dark w-100" type="submit">Search</button>
+            </div>
+        </div>
     </form>
 
 
-    <table class="table table-hover table-bordered table-sm">
+    <table class="table table-hover table-bordered table-sm table-striped" >
         <thead>
             <tr>
                 <th class="text-nowrap">Date</th>
                 <th>Desk</th>
                 <th>Employee</th>
-                <th>Modify</th>
+                <th class="text-center">Modify</th>
             </tr>
         </thead>
         <tbody>
@@ -41,7 +60,7 @@ else
                     <td>@booking.BookingDate.ToString("ddd dd MMM yyyy")</td>
                     <td>@booking.Desk.Name</td>
                     <td>@booking.User.FirstName @booking.User.LastName</td>
-                    <td>
+                    <td class="text-center">
                         <form asp-action="Cancel" method="post" asp-route-id="@booking.Id" onsubmit="return confirm('Are you sure you want to cancel the booking?');">
                             <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
                             @Html.AntiForgeryToken()

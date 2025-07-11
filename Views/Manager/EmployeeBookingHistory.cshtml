@@ -1,0 +1,47 @@
+﻿@model IEnumerable<DeskBookingApplication.Models.DeskBooking>
+
+@{
+    ViewData["Title"] = "Employee Desk Booking History";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (!Model.Any())
+{
+    <p>There are no bookings on these dates!</p>
+
+    <a asp-action="EmployeeBookingHistory" class="btn btn-secondary">Reset Filters</a>
+
+}
+else
+{
+
+    @* Search Options - Search bar for employee search, calendar to filter dates*@
+    <form asp-controller="Manager" asp-action="EmployeeBookingHistory">
+        <input name="searchString" class="form-control" type="search" placeholder="Enter employee first or last name" aria-label="Search" />
+        <label for="dateStart">Start Date</label> <input type="date" name="dateStart" class="form-control" max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        <label for="dateEnd">End Date</label>  <input type="date" name="dateEnd" class="form-control" max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        <button class="btn btn-dark" type="submit">Search</button> 
+    </form>
+
+
+    <table class="table table-hover table-bordered table-sm">
+        <thead>
+            <tr>
+                <th class="text-nowrap">Date</th>
+                <th>Desk</th>
+                <th>Employee</th>               
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in Model)
+            {
+                <tr>
+                    <td>@booking.BookingDate.ToString("ddd dd MMM yyyy")</td>
+                    <td>@booking.Desk.Name</td>
+                    <td>@booking.User.FirstName @booking.User.LastName</td>                   
+                </tr>
+            }
+        </tbody>
+    </table>
+}

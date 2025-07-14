@@ -7,11 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DeskBookingApplication.Controllers
 {
-    [Authorize(Roles="Manager")]
+    [Authorize(Roles = "Manager")]
     public class ManagerController : Controller
     {
         private readonly DeskBookingAuthDbContext _context;
         private readonly UserManager<DeskBookingApplicationUser> _userManager;
+       
 
         public ManagerController(
             DeskBookingAuthDbContext context,
@@ -113,6 +114,13 @@ namespace DeskBookingApplication.Controllers
 
             return View(AllBookings);
         }
+
+        public async Task<IActionResult> ManageEmployees()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            return View(users);
+        }
+
 
 
 

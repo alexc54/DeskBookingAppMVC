@@ -1,0 +1,21 @@
+﻿@model IEnumerable<DeskBookingApplication.Areas.Identity.Data.DeskBookingApplicationUser>
+
+
+
+<table class="table table-hover table-bordered table-sm table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>         
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Model)
+        {
+            <tr>
+                <td>@employee.FirstName @employee.LastName </td>
+                <td>@employee.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>

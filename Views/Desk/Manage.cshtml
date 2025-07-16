@@ -1,0 +1,48 @@
+﻿@model IEnumerable<DeskBookingApplication.Models.Desk>
+
+@{
+    ViewData["Title"] = "Manage Desks";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+@if (!Model.Any())
+{
+    <p>No desks have been created!</p>
+}
+else
+{
+    <a asp-action="Create" class="btn btn-primary mb-3">Add New Desk</a>
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr>
+                <th>Desk Name</th> 
+                <th>Modify</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var desk in Model)
+            {
+                <tr>
+                    <td>@desk.Name</td>
+                    <td>
+                        <form asp-action="edit" method="get" asp-route-id="@desk.Id" style="display:inline;">
+                            <button type="submit" class="btn btn-secondary btn-sm">Edit</button>
+                        </form>
+
+                        <form asp-action="delete" method="post" asp-route-id="@desk.Id"
+                              onsubmit="return confirm('Are you sure you want to remove this desk?');"
+                              style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+}

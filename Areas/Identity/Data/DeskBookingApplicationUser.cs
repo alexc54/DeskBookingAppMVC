@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 
 namespace DeskBookingApplication.Areas.Identity.Data;
 
@@ -11,8 +7,8 @@ namespace DeskBookingApplication.Areas.Identity.Data;
 public class DeskBookingApplicationUser : IdentityUser
 {
     [PersonalData]
-    [Column(TypeName ="nvarchar(100)")]
-    public string FirstName {  get; set; }
+    [Column(TypeName = "nvarchar(100)")]
+    public string FirstName { get; set; }
 
     [PersonalData]
     [Column(TypeName = "nvarchar(100)")]

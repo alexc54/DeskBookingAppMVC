@@ -4,7 +4,8 @@ using System.ComponentModel.DataAnnotations;
 namespace DeskBookingApplication.Models
 {
     public class DeskBooking
-    {        public int Id { get; set; }
+    {
+        public int Id { get; set; }
 
         public string UserId { get; set; }
         public DeskBookingApplicationUser User { get; set; }

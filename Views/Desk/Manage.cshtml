@@ -1,0 +1,83 @@
+﻿@model IEnumerable<DeskBookingApplication.Models.Desk>
+
+@{
+    ViewData["Title"] = "Manage Desks";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+
+@if (!Model.Any())
+{
+    <p>No desks have been created!</p>
+}
+else
+{
+    <form asp-action="Create" method="post" class="mb-3" onsubmit="return confirm('Are you sure you want to create a new desk?');">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-primary">Add New Desk</button>
+    </form>
+    
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr>
+                <th>Desk Name</th> 
+                <th>Notes</th>
+                <th>Availability</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var desk in Model)
+            {
+                <tr>
+                    <td>@desk.Name</td>
+
+                    <td>@desk.Notes 
+                        <form asp-action="edit" method="get" asp-route-id="@desk.Id" style="display:inline;">
+                            <button type="submit" class="btn btn-secondary btn-sm">Edit</button>
+                        </form>
+                    </td>
+                    <td>                      
+
+                        @if(desk.IsActive)
+                        {
+                            <form asp-action="deactivate" method="post" asp-route-id="@desk.Id"
+                            onsubmit="return confirm('Are you sure you want to deactivate this desk?');"
+                            style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger btn-sm">Deactivate</button>
+                            </form>                            
+                        }
+
+                          else
+                        {
+                            <form asp-action="activate" method="post" asp-route-id="@desk.Id"
+                                  onsubmit="return confirm('Are you sure you want to activate this desk?');"
+                                  style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-success btn-sm">Activate</button>
+                            </form>
+                        }                        
+                    </td>
+                </tr> 
+                }
+                </tbody>
+                </table>
+
+
+}

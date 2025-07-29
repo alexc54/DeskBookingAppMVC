@@ -1,7 +1,7 @@
+using DeskBookingApplication.Areas.Identity.Data;
+using DeskBookingApplication.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using DeskBookingApplication.Data;
-using DeskBookingApplication.Areas.Identity.Data;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DeskBookingAuthDbContextConnection") ?? throw new InvalidOperationException("Connection string 'DeskBookingAuthDbContextConnection' not found.");
 
@@ -39,7 +39,7 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 //Seeding roles into app - called everytime app is restarted 
-using(var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
@@ -61,7 +61,7 @@ using (var scope = app.Services.CreateScope())
     string email = "manager@manager.com";
     string password = "Password1!";
 
-    if(await userManager.FindByEmailAsync(email) == null)
+    if (await userManager.FindByEmailAsync(email) == null)
     {
         var user = new DeskBookingApplicationUser();
         user.UserName = email;
@@ -71,7 +71,7 @@ using (var scope = app.Services.CreateScope())
 
         await userManager.CreateAsync(user, password);
 
-       await userManager.AddToRoleAsync(user, "Manager");
+        await userManager.AddToRoleAsync(user, "Manager");
 
     }
 

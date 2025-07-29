@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DeskBookingApplication.Controllers
 {
@@ -37,7 +36,7 @@ namespace DeskBookingApplication.Controllers
 
             //Query that gets desks that are not booked
             var availableDesks = await _context.Desks
-                .Where(d => !bookedDeskIds.Contains(d.Id))
+                .Where(d => d.IsActive && !bookedDeskIds.Contains(d.Id))
                 .ToListAsync();
 
             ViewBag.Date = date.Value.ToString("yyyy-MM-dd");
@@ -73,12 +72,13 @@ namespace DeskBookingApplication.Controllers
                     .ToListAsync();
 
                 var availableDesks = await _context.Desks
-                    .Where(d => !bookedDeskIds.Contains(d.Id))
+                    .Where(d => d.IsActive && !bookedDeskIds.Contains(d.Id))
                     .ToListAsync();
 
                 ViewBag.Date = date.ToString("yyyy-MM-dd");
-                
+
                 return View(availableDesks);
+
             }
 
             //Creates and saves new booking if no errors
@@ -92,6 +92,7 @@ namespace DeskBookingApplication.Controllers
             _context.DeskBookings.Add(booking);
             await _context.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = "Desk booked successfully!";
             return RedirectToAction(nameof(MyBookings));
         }
 
@@ -105,7 +106,7 @@ namespace DeskBookingApplication.Controllers
             //Finds upcoming bookings done by this user (today included)
             var myBookings = await _context.DeskBookings
                 .Include(b => b.Desk)
-                .Where(b => b.UserId == user.Id && b.BookingDate.Date>= DateTime.Today)
+                .Where(b => b.UserId == user.Id && b.BookingDate.Date >= DateTime.Today)
                 .OrderBy(b => b.BookingDate)
                 .ToListAsync();
 
@@ -119,11 +120,13 @@ namespace DeskBookingApplication.Controllers
         {
             var booking = await _context.DeskBookings.FindAsync(id);
             if (booking == null)
-    {
-        return NotFound();
-    }
+            {
+                return NotFound();
+            }
             _context.DeskBookings.Remove(booking);
             await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Desk cancelled successfully!";
             return RedirectToAction(nameof(MyBookings));
         }
 
@@ -144,10 +147,4 @@ namespace DeskBookingApplication.Controllers
         }
 
     }
-
-    
-
-
-
-
 }

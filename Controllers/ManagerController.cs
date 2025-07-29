@@ -12,7 +12,7 @@ namespace DeskBookingApplication.Controllers
     {
         private readonly DeskBookingAuthDbContext _context;
         private readonly UserManager<DeskBookingApplicationUser> _userManager;
-       
+
 
         public ManagerController(
             DeskBookingAuthDbContext context,
@@ -52,9 +52,9 @@ namespace DeskBookingApplication.Controllers
             }
 
             //Finds upcoming bookings done by all users (today included)
-            var AllBookings = await query                
+            var AllBookings = await query
                 .OrderBy(b => b.BookingDate)
-                .ToListAsync();            
+                .ToListAsync();
 
             return View(AllBookings);
         }

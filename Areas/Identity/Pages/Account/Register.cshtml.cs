@@ -65,12 +65,16 @@ namespace DeskBookingApplication.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [StringLength(50, MinimumLength = 2, ErrorMessage = "First name must be at least 2 characters.")]
             [DataType(DataType.Text)]
+            [RegularExpression(@"^[a-zA-Z\s\-]+$", ErrorMessage = "Only letters, spaces, and hyphens are allowed.")]
             [Display(Name = "First Name")]
             public string FirstName { get; set; }
 
 
             [Required]
+            [StringLength(50, MinimumLength = 2, ErrorMessage = "Last name must be at least 2 characters.")]
+            [RegularExpression(@"^[a-zA-Z\s\-]+$", ErrorMessage = "Only letters, spaces, and hyphens are allowed.")]
             [DataType(DataType.Text)]
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
